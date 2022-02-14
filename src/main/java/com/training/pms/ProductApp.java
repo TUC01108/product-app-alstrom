@@ -53,6 +53,7 @@ public class ProductApp {
 				price = scanner.nextInt();
 
 				product = new Product(productId, productName, quantityOnHand, price);
+				
 				// call dao layer to save product
 				productDAO.addProduct(product);
 				System.out.println("\nCongratulations, your product : " + productName + " saved successfully\n");
