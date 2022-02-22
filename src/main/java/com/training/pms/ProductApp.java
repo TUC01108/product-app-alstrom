@@ -21,7 +21,7 @@ public class ProductApp {
 		int price = 0;
 
 		while (true) {
-
+			System.out.println("=========================================");
 			System.out.println("P R O D U C T      -    APP    MENU");
 			System.out.println("1. Add Product ");
 			System.out.println("2. Delete Product ");
@@ -29,8 +29,9 @@ public class ProductApp {
 			System.out.println("4. Search Product By Id ");
 			System.out.println("5. Search Product By Name ");
 			System.out.println("6. Print All Products ");
+			System.out.println("7. Search Product By Price(lower/upper) ");
 			System.out.println("9. E X I T ");
-
+			System.out.println("=========================================");
 			System.out.println("Please enter your choice : ");
 			choice = scanner.nextInt();
 
@@ -82,7 +83,24 @@ public class ProductApp {
 				productDAO.updateProduct(product);
 				System.out.println("\nCongratulations, your product : " + productName + " updated successfully\n");
 				break;
-
+				
+			case 5:
+				System.out.println("Please enter product name to search : ");
+				productName = scanner.next();
+				productDAO.searchByProductName(productName);
+				break;
+			case 6:
+				productDAO.printAllProducts();
+				break;
+			
+			case 7:
+				System.out.println("Please enter product price (lower) :");
+				int lowerPrice = scanner.nextInt();
+				System.out.println("Please enter product price (upper) :");
+				int upperPrice = scanner.nextInt();
+				productDAO.searchProductByPrice(lowerPrice,upperPrice);
+				break;
+				
 			case 9:
 				System.out.println("Thanks for using my product app!");
 				System.exit(0);
