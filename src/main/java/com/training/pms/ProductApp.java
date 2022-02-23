@@ -1,5 +1,8 @@
 package com.training.pms;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Scanner;
 
 import com.training.pms.dao.ProductDAO;
@@ -19,6 +22,8 @@ public class ProductApp {
 		String productName = null;
 		int quantityOnHand = 0;
 		int price = 0;
+		boolean result;
+		List<Product> products = new ArrayList<Product>();
 
 		while (true) {
 			System.out.println("=========================================");
@@ -43,6 +48,11 @@ public class ProductApp {
 				// take input from user to add a product
 				System.out.println("Please enter product id :");
 				productId = scanner.nextInt();
+				
+				if(productDAO.isProductExists(productId)) {
+					System.out.println("Product with product id : "+productId+" already exists, please try with another product id");
+					continue;
+				}
 
 				System.out.println("Please enter product name :");
 				productName = scanner.next();
@@ -56,8 +66,29 @@ public class ProductApp {
 				product = new Product(productId, productName, quantityOnHand, price);
 				
 				// call dao layer to save product
-				productDAO.addProduct(product);
-				System.out.println("\nCongratulations, your product : " + productName + " saved successfully\n");
+				result = productDAO.addProduct(product);
+				if(result) {
+					System.out.println("\nCongratulations, your product : " + productName + " saved successfully\n");
+				} else {
+					System.out.println("\nSorry your product cannot be save.\n");
+				}
+				
+				break;
+				
+			case 2:
+				System.out.println("Please enter product id to delete :");
+				productId = scanner.nextInt();
+				
+				if(productDAO.isProductExists(productId))
+				{
+					productDAO.deleteProduct(productId);
+					System.out.println("Product with product id : "+productId+ " deleted successfully");
+				}
+				else
+				{
+					System.out.println("Product with product id : "+productId+ " does not exists, hence cannot be deleted");
+
+				}
 				break;
 				
 			case 3:
@@ -68,6 +99,11 @@ public class ProductApp {
 				// take input from user to update a product
 				System.out.println("Please enter a product id to update :");
 				productId = scanner.nextInt();
+				
+				if(!productDAO.isProductExists(productId)) {
+					System.out.println("Product with product id : "+productId+" does not exists, so cannot be updated");
+					continue;
+				}
 
 				System.out.println("Please enter a new product name :");
 				productName = scanner.next();
@@ -84,13 +120,40 @@ public class ProductApp {
 				System.out.println("\nCongratulations, your product : " + productName + " updated successfully\n");
 				break;
 				
+			case 4:
+				System.out.println("Please enter product id to search :");
+				productId = scanner.nextInt();
+
+				if (productDAO.isProductExists(productId)) {
+					Product temp = productDAO.searchByProductId(productId);
+					System.out.println(temp);
+				} else {
+					System.out.println(
+							"Product with product id : " + productId + " does not exists, hence cannot be deleted");
+
+				}
+				break;
+				
 			case 5:
 				System.out.println("Please enter product name to search : ");
+				
 				productName = scanner.next();
-				productDAO.searchByProductName(productName);
+				products = productDAO.searchByProductName(productName);
+				if (products.size()==0) {
+					System.out.println("No products matching your criteria");
+					continue;
+				}
+				printProductDetails(products);
+				
 				break;
 			case 6:
-				productDAO.printAllProducts();
+				products = productDAO.getProducts();
+				if (products.size()==0) {
+					System.out.println("No products");
+					continue;
+				}
+				
+				printProductDetails(products);
 				break;
 			
 			case 7:
@@ -98,7 +161,13 @@ public class ProductApp {
 				int lowerPrice = scanner.nextInt();
 				System.out.println("Please enter product price (upper) :");
 				int upperPrice = scanner.nextInt();
-				productDAO.searchProductByPrice(lowerPrice,upperPrice);
+				products = productDAO.searchProductByPrice(lowerPrice,upperPrice);
+				
+				if (products.size()==0) {
+					System.out.println("No products matching your criteria");
+					continue;
+				}
+				printProductDetails(products);
 				break;
 				
 			case 9:
@@ -110,5 +179,14 @@ public class ProductApp {
 				break;
 			}
 		}
+	}
+
+	public void printProductDetails(List<Product> products) {
+		Iterator<Product> iterator = products.iterator();
+		while(iterator.hasNext()) {
+			Product temp = iterator.next();
+			System.out.println(temp);
+		}
+		
 	}
 }

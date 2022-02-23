@@ -11,12 +11,16 @@ public class Product {
 		// TODO Auto-generated constructor stub
 	}
 
+	
+
 	public Product(int productId, String productName, int quantityOnHand, int price) {
 		this.productId = productId;
 		this.productName = productName;
 		this.quantityOnHand = quantityOnHand;
 		this.price = price;
 	}
+
+
 
 	public int getProductId() {
 		return productId;
